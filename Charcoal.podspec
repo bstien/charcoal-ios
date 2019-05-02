@@ -24,8 +24,7 @@ Pod::Spec.new do |s|
         'Charcoal' => ['Sources/Charcoal/Resources/*.xcassets', 'Sources/Charcoal/Resources/*.lproj']
     }
     ss.dependency 'FinniversKit'
-    ss.dependency 'Diffuse'
-    ss.frameworks = 'Foundation', 'UIKit', 'FinniversKit', 'Diffuse'
+    ss.frameworks = 'Foundation', 'UIKit', 'FinniversKit'
   end
 
   s.subspec "FINN" do |ss|

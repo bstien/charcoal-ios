@@ -62,13 +62,6 @@ extension Filter: Equatable {
     }
 }
 
-extension Filter: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(title)
-        hasher.combine(key)
-    }
-}
-
 // MARK: - Factory
 
 extension Filter {
