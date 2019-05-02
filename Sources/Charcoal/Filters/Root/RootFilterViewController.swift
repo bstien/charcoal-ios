@@ -53,6 +53,13 @@ final class RootFilterViewController: FilterViewController {
         return button
     }()
 
+    private lazy var inlineFilterView: InlineFilterView = {
+        let view = InlineFilterView(withAutoLayout: true)
+        view.delegate = self
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
     private lazy var verticalViewController: VerticalListViewController = {
         let viewController = VerticalListViewController()
         viewController.delegate = self
@@ -61,8 +68,9 @@ final class RootFilterViewController: FilterViewController {
 
     private lazy var loadingViewController = LoadingViewController(backgroundColor: .milk, presentationDelay: 0)
     private var freeTextFilterViewController: FreeTextFilterViewController?
-    private var shouldResetInlineFilterCell = false
     private var loadingStartTimeInterval: TimeInterval?
+
+    private var indexPathsToReload: [IndexPath]?
 
     // MARK: - Filter
 
@@ -90,17 +98,31 @@ final class RootFilterViewController: FilterViewController {
         showBottomButton(true, animated: false)
         updateBottomButtonTitle()
         setup()
+
+        configureInlineFilter()
+        inlineFilterView.slideInWithFade()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tableView.reloadData()
+        if let indexPaths = indexPathsToReload {
+            tableView.reloadRows(at: indexPaths, with: .none)
+            indexPathsToReload = nil
+        }
     }
 
     // MARK: - Public
 
     func reloadFilters() {
+        configureInlineFilter()
         tableView.reloadData()
+    }
+
+    func reloadCells(for filter: Filter) {
+        let keys = filterContainer.rootFilters
+        if let index = keys.firstIndex(of: filter) {
+            indexPathsToReload = reloadCellsWithExclusiveFilters(for: filter) + [IndexPath(row: index, section: Section.rootFilters.rawValue)]
+        }
     }
 
     // MARK: - Setup
@@ -109,7 +131,7 @@ final class RootFilterViewController: FilterViewController {
         self.filterContainer = filterContainer
         updateNavigationTitleView()
         updateBottomButtonTitle()
-        tableView.reloadData()
+        reloadFilters()
     }
 
     func showLoadingIndicator(_ show: Bool) {
@@ -169,17 +191,32 @@ final class RootFilterViewController: FilterViewController {
         bottomButton.buttonTitle = title
     }
 
+    private func configureInlineFilter() {
+        guard let inlineFilter = filterContainer.inlineFilter else {
+            return
+        }
+
+        let segmentTitles = inlineFilter.subfilters.map { $0.subfilters.map { $0.title } }
+        let selectedItems = inlineFilter.subfilters.map {
+            $0.subfilters.enumerated().compactMap { index, filter in
+                self.selectionStore.isSelected(filter) ? index : nil
+            }
+        }
+
+        inlineFilterView.configure(withTitles: segmentTitles, selectedItems: selectedItems)
+    }
+
     // MARK: - Actions
 
     @objc private func handleResetButtonTap() {
         selectionStore.removeValues(for: filterContainer.allFilters)
         rootDelegate?.rootFilterViewControllerDidResetAllFilters(self)
         freeTextFilterViewController?.reset()
-        shouldResetInlineFilterCell = true
+        inlineFilterView.resetContentOffset()
 
         tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
         tableView.layoutIfNeeded()
-        tableView.reloadData()
+        reloadFilters()
     }
 }
 
@@ -220,24 +257,7 @@ extension RootFilterViewController: UITableViewDataSource {
             return cell
         case .inline:
             let cell = tableView.dequeue(InlineFilterCell.self, for: indexPath)
-            cell.delegate = self
-
-            if let inlineFilter = filterContainer.inlineFilter {
-                let segmentTitles = inlineFilter.subfilters.map { $0.subfilters.map { $0.title } }
-                let selectedItems = inlineFilter.subfilters.map {
-                    $0.subfilters.enumerated().compactMap { index, filter in
-                        self.selectionStore.isSelected(filter) ? index : nil
-                    }
-                }
-
-                cell.configure(withTitles: segmentTitles, selectedItems: selectedItems)
-            }
-
-            if shouldResetInlineFilterCell {
-                shouldResetInlineFilterCell = false
-                cell.resetContentOffset()
-            }
-
+            cell.configure(with: inlineFilterView)
             return cell
         case .rootFilters:
             let currentFilter = filterContainer.rootFilters[indexPath.row]
@@ -293,7 +313,7 @@ extension RootFilterViewController: RootFilterCellDelegate {
 
         selectionStore.removeValues(for: filterToRemove)
         rootDelegate?.rootFilterViewController(self, didRemoveFilter: filterToRemove)
-        reloadCellsWithExclusiveFilters(for: currentFilter)
+        tableView.reloadRows(at: reloadCellsWithExclusiveFilters(for: currentFilter), with: .none)
     }
 
     func rootFilterCellDidRemoveAllTags(_ cell: RootFilterCell) {
@@ -305,17 +325,18 @@ extension RootFilterViewController: RootFilterCellDelegate {
 
         selectionStore.removeValues(for: currentFilter)
         rootDelegate?.rootFilterViewController(self, didRemoveFilter: currentFilter)
-        reloadCellsWithExclusiveFilters(for: currentFilter)
+        tableView.reloadRows(at: reloadCellsWithExclusiveFilters(for: currentFilter), with: .none)
     }
 
-    private func reloadCellsWithExclusiveFilters(for filter: Filter) {
+    private func reloadCellsWithExclusiveFilters(for filter: Filter) -> [IndexPath] {
         let keys = filter.mutuallyExclusiveFilterKeys
 
         let indexPathsToReload = filterContainer.rootFilters.enumerated().compactMap { index, subfilter in
             return keys.contains(subfilter.key) ? IndexPath(row: index, section: Section.rootFilters.rawValue) : nil
         }
 
-        tableView.reloadRows(at: indexPathsToReload, with: .none)
+        return indexPathsToReload
+//        tableView.reloadRows(at: indexPathsToReload, with: .none)
     }
 }
 

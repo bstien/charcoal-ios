@@ -209,6 +209,8 @@ extension CharcoalViewController: FilterViewControllerDelegate {
         case .external:
             selectionDelegate?.charcoalViewController(self, didSelectExternalFilterWithKey: filter.key, value: filter.value)
         }
+
+        rootFilterViewController?.reloadCells(for: filter)
     }
 
     private func pushViewController(_ viewController: FilterViewController) {
