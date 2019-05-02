@@ -1,0 +1,11 @@
+framework module Diffuse {
+  umbrella header "Diffuse.h"
+
+  export *
+  module * { export * }
+}
+
+module Diffuse.Swift {
+    header "Diffuse-Swift.h"
+    requires objc
+}

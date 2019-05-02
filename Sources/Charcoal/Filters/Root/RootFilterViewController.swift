@@ -2,6 +2,7 @@
 //  Copyright © FINN.no AS, Inc. All rights reserved.
 //
 
+import Diffuse
 import UIKit
 
 protocol RootFilterViewControllerDelegate: AnyObject {
@@ -113,9 +114,14 @@ final class RootFilterViewController: FilterViewController {
 
     // MARK: - Public
 
-    func reloadFilters() {
+    func reloadFilters(with changes: CollectionChanges? = nil) {
         configureInlineFilter()
-        tableView.reloadData()
+
+        if let changes = changes {
+            tableView.reload(with: changes, section: Section.rootFilters.rawValue, updateDataSource: {})
+        } else {
+            tableView.reloadData()
+        }
     }
 
     func reloadCells(for filter: Filter) {
@@ -128,10 +134,12 @@ final class RootFilterViewController: FilterViewController {
     // MARK: - Setup
 
     func set(filterContainer: FilterContainer) {
-        self.filterContainer = filterContainer
         updateNavigationTitleView()
         updateBottomButtonTitle()
-        reloadFilters()
+
+        let changes = Diffuse.diff(old: self.filterContainer.rootFilters, new: filterContainer.rootFilters)
+        reloadFilters(with: changes)
+        self.filterContainer = filterContainer
     }
 
     func showLoadingIndicator(_ show: Bool) {

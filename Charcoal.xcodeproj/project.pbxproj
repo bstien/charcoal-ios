@@ -183,6 +183,9 @@
 		DADF2DCE225373A100567C78 /* OnboardingCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6C26442240EA9E000AED38 /* OnboardingCellViewModel.swift */; };
 		DADF2DD0225375CE00567C78 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADF2DCF225375CE00567C78 /* OnboardingViewController.swift */; };
 		DADF2DD22253761300567C78 /* OnboardingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADF2DD12253761300567C78 /* OnboardingCell.swift */; };
+		DAE86711227AE6EC00BFF481 /* Diffuse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAE86710227AE6EC00BFF481 /* Diffuse.framework */; };
+		DAE86712227AE72B00BFF481 /* Diffuse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAE86710227AE6EC00BFF481 /* Diffuse.framework */; };
+		DAE86713227AE76200BFF481 /* Diffuse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAE86710227AE6EC00BFF481 /* Diffuse.framework */; };
 		DAEA93D8225F7228003B215D /* MapFilterDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAEA93D7225F7228003B215D /* MapFilterDemoViewController.swift */; };
 		DAEB179721A6986500D9AAD6 /* FreeTextFilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAEB179621A6986500D9AAD6 /* FreeTextFilterViewController.swift */; };
 		DAF3CA7221830B1C007235B0 /* StepperFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF3CA7121830B1C007235B0 /* StepperFilterView.swift */; };
@@ -476,6 +479,7 @@
 		DAD45C0F223A898C00FE1EF5 /* .FinniversKit.version */ = {isa = PBXFileReference; lastKnownFileType = text; path = .FinniversKit.version; sourceTree = "<group>"; };
 		DADF2DCF225375CE00567C78 /* OnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		DADF2DD12253761300567C78 /* OnboardingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingCell.swift; sourceTree = "<group>"; };
+		DAE86710227AE6EC00BFF481 /* Diffuse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Diffuse.framework; path = Carthage/Build/iOS/Diffuse.framework; sourceTree = "<group>"; };
 		DAEA93D7225F7228003B215D /* MapFilterDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapFilterDemoViewController.swift; sourceTree = "<group>"; };
 		DAEB179621A6986500D9AAD6 /* FreeTextFilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTextFilterViewController.swift; sourceTree = "<group>"; };
 		DAF3CA7121830B1C007235B0 /* StepperFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperFilterView.swift; sourceTree = "<group>"; };
@@ -489,6 +493,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAE86711227AE6EC00BFF481 /* Diffuse.framework in Frameworks */,
 				DA51040B21BE5F19004048BD /* FinniversKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -497,6 +502,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAE86712227AE72B00BFF481 /* Diffuse.framework in Frameworks */,
 				DA51040C21BE5F59004048BD /* FinniversKit.framework in Frameworks */,
 				44ECE68E208F7FF90017AC82 /* Charcoal.framework in Frameworks */,
 				CFEDCDFF2232B756008FCDB1 /* FINNSetup.framework in Frameworks */,
@@ -524,6 +530,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAE86713227AE76200BFF481 /* Diffuse.framework in Frameworks */,
 				DAD45C10223A899600FE1EF5 /* FinniversKit.framework in Frameworks */,
 				CFCB35F322367C3D004E6EB3 /* Charcoal.framework in Frameworks */,
 			);
@@ -701,6 +708,7 @@
 		44ECE68C208F7FF20017AC82 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DAE86710227AE6EC00BFF481 /* Diffuse.framework */,
 				DAD45BE7223A898C00FE1EF5 /* Build */,
 				DA51041021BE66A1004048BD /* HockeySDK.framework */,
 				DA51040A21BE5F19004048BD /* FinniversKit.framework */,
@@ -1578,6 +1586,7 @@
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/HockeySDK.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/FinniversKit.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Diffuse.framework",
 			);
 			name = "Run Script (carthage)";
 			outputFileListPaths = (

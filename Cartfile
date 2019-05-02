@@ -1,2 +1,3 @@
 github "finn-no/FinniversKit" "master"
+github "finn-no/Diffuse" "master"
 github "bitstadium/HockeySDK-iOS" ~> 5.0
