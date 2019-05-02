@@ -17,7 +17,7 @@ class FreeTextFilterCell: UITableViewCell {
         setup()
     }
 
-    func configure(with searchBar: UISearchBar) {
+    func configure(with searchBar: UISearchBar?) {
         self.searchBar = searchBar
         setupSearchBar(searchBar)
     }

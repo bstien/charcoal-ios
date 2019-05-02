@@ -24,12 +24,15 @@ final class RootFilterViewController: FilterViewController {
         didSet { delegate = rootDelegate }
     }
 
-    weak var freeTextFilterDelegate: FreeTextFilterDelegate?
-    weak var freeTextFilterDataSource: FreeTextFilterDataSource?
+    weak var freeTextFilterDelegate: FreeTextFilterDelegate? {
+        didSet { freeTextFilterViewController?.filterDelegate = freeTextFilterDelegate }
+    }
+
+    weak var freeTextFilterDataSource: FreeTextFilterDataSource? {
+        didSet { freeTextFilterViewController?.filterDataSource = freeTextFilterDataSource }
+    }
 
     // MARK: - Private properties
-
-    private lazy var verticalSelectorView = VerticalSelectorView()
 
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
@@ -53,24 +56,19 @@ final class RootFilterViewController: FilterViewController {
         return button
     }()
 
-    private lazy var inlineFilterView: InlineFilterView = {
-        let view = InlineFilterView(withAutoLayout: true)
-        view.delegate = self
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-
     private lazy var verticalViewController: VerticalListViewController = {
         let viewController = VerticalListViewController()
         viewController.delegate = self
         return viewController
     }()
 
+    private lazy var verticalSelectorView = VerticalSelectorView()
     private lazy var loadingViewController = LoadingViewController(backgroundColor: .milk, presentationDelay: 0)
-    private var freeTextFilterViewController: FreeTextFilterViewController?
     private var loadingStartTimeInterval: TimeInterval?
-
     private var indexPathsToReload: [IndexPath]?
+
+    private var freeTextFilterViewController: FreeTextFilterViewController?
+    private var inlineFilterView: InlineFilterView?
 
     // MARK: - Filter
 
@@ -99,12 +97,14 @@ final class RootFilterViewController: FilterViewController {
         updateBottomButtonTitle()
         setup()
 
+        configureFreeTextFilter()
         configureInlineFilter()
-        inlineFilterView.slideInWithFade()
+        inlineFilterView?.slideInWithFade()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
         if let indexPaths = indexPathsToReload {
             tableView.reloadRows(at: indexPaths, with: .none)
             indexPathsToReload = nil
@@ -113,7 +113,15 @@ final class RootFilterViewController: FilterViewController {
 
     // MARK: - Public
 
+    func set(filterContainer: FilterContainer) {
+        self.filterContainer = filterContainer
+        updateNavigationTitleView()
+        updateBottomButtonTitle()
+        reloadFilters()
+    }
+
     func reloadFilters() {
+        configureFreeTextFilter()
         configureInlineFilter()
         tableView.reloadData()
     }
@@ -121,17 +129,9 @@ final class RootFilterViewController: FilterViewController {
     func reloadCells(for filter: Filter) {
         let keys = filterContainer.rootFilters
         if let index = keys.firstIndex(of: filter) {
-            indexPathsToReload = reloadCellsWithExclusiveFilters(for: filter) + [IndexPath(row: index, section: Section.rootFilters.rawValue)]
+            let indexPath = IndexPath(row: index, section: Section.rootFilters.rawValue)
+            indexPathsToReload = exclusiveFiltersIndexPaths(for: filter) + [indexPath]
         }
-    }
-
-    // MARK: - Setup
-
-    func set(filterContainer: FilterContainer) {
-        self.filterContainer = filterContainer
-        updateNavigationTitleView()
-        updateBottomButtonTitle()
-        reloadFilters()
     }
 
     func showLoadingIndicator(_ show: Bool) {
@@ -157,16 +157,7 @@ final class RootFilterViewController: FilterViewController {
         }
     }
 
-    private func setup() {
-        view.addSubview(tableView)
-
-        NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomButton.topAnchor),
-        ])
-    }
+    // MARK: - Private
 
     private func updateNavigationTitleView() {
         if let vertical = filterContainer.verticals?.first(where: { $0.isCurrent }) {
@@ -191,9 +182,23 @@ final class RootFilterViewController: FilterViewController {
         bottomButton.buttonTitle = title
     }
 
+    private func configureFreeTextFilter() {
+        if let freeTextFilter = filterContainer.freeTextFilter, freeTextFilterViewController == nil {
+            freeTextFilterViewController = FreeTextFilterViewController(filter: freeTextFilter, selectionStore: selectionStore)
+        }
+
+        freeTextFilterViewController?.delegate = self
+        freeTextFilterViewController?.filterDelegate = freeTextFilterDelegate
+        freeTextFilterViewController?.filterDataSource = freeTextFilterDataSource
+    }
+
     private func configureInlineFilter() {
         guard let inlineFilter = filterContainer.inlineFilter else {
             return
+        }
+
+        if inlineFilterView == nil {
+            inlineFilterView = InlineFilterView(withAutoLayout: true)
         }
 
         let segmentTitles = inlineFilter.subfilters.map { $0.subfilters.map { $0.title } }
@@ -203,7 +208,7 @@ final class RootFilterViewController: FilterViewController {
             }
         }
 
-        inlineFilterView.configure(withTitles: segmentTitles, selectedItems: selectedItems)
+        inlineFilterView?.configure(withTitles: segmentTitles, selectedItems: selectedItems)
     }
 
     // MARK: - Actions
@@ -212,11 +217,24 @@ final class RootFilterViewController: FilterViewController {
         selectionStore.removeValues(for: filterContainer.allFilters)
         rootDelegate?.rootFilterViewControllerDidResetAllFilters(self)
         freeTextFilterViewController?.reset()
-        inlineFilterView.resetContentOffset()
+        inlineFilterView?.resetContentOffset()
 
         tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
         tableView.layoutIfNeeded()
         reloadFilters()
+    }
+
+    // MARK: - Setup
+
+    private func setup() {
+        view.addSubview(tableView)
+
+        NSLayoutConstraint.activate([
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: bottomButton.topAnchor),
+        ])
     }
 }
 
@@ -244,21 +262,14 @@ extension RootFilterViewController: UITableViewDataSource {
         switch section {
         case .freeText:
             let cell = tableView.dequeue(FreeTextFilterCell.self, for: indexPath)
-
-            if let freeTextFilter = filterContainer.freeTextFilter, freeTextFilterViewController == nil {
-                freeTextFilterViewController = FreeTextFilterViewController(filter: freeTextFilter, selectionStore: selectionStore)
-            }
-
-            freeTextFilterViewController?.delegate = self
-            freeTextFilterViewController?.filterDelegate = freeTextFilterDelegate
-            freeTextFilterViewController?.filterDataSource = freeTextFilterDataSource
-            cell.configure(with: freeTextFilterViewController!.searchBar)
-
+            cell.configure(with: freeTextFilterViewController?.searchBar)
             return cell
+
         case .inline:
             let cell = tableView.dequeue(InlineFilterCell.self, for: indexPath)
             cell.configure(with: inlineFilterView)
             return cell
+
         case .rootFilters:
             let currentFilter = filterContainer.rootFilters[indexPath.row]
             let titles = selectionStore.titles(for: currentFilter)
@@ -313,7 +324,7 @@ extension RootFilterViewController: RootFilterCellDelegate {
 
         selectionStore.removeValues(for: filterToRemove)
         rootDelegate?.rootFilterViewController(self, didRemoveFilter: filterToRemove)
-        tableView.reloadRows(at: reloadCellsWithExclusiveFilters(for: currentFilter), with: .none)
+        tableView.reloadRows(at: exclusiveFiltersIndexPaths(for: currentFilter), with: .none)
     }
 
     func rootFilterCellDidRemoveAllTags(_ cell: RootFilterCell) {
@@ -325,10 +336,10 @@ extension RootFilterViewController: RootFilterCellDelegate {
 
         selectionStore.removeValues(for: currentFilter)
         rootDelegate?.rootFilterViewController(self, didRemoveFilter: currentFilter)
-        tableView.reloadRows(at: reloadCellsWithExclusiveFilters(for: currentFilter), with: .none)
+        tableView.reloadRows(at: exclusiveFiltersIndexPaths(for: currentFilter), with: .none)
     }
 
-    private func reloadCellsWithExclusiveFilters(for filter: Filter) -> [IndexPath] {
+    private func exclusiveFiltersIndexPaths(for filter: Filter) -> [IndexPath] {
         let keys = filter.mutuallyExclusiveFilterKeys
 
         let indexPathsToReload = filterContainer.rootFilters.enumerated().compactMap { index, subfilter in
@@ -336,7 +347,6 @@ extension RootFilterViewController: RootFilterCellDelegate {
         }
 
         return indexPathsToReload
-//        tableView.reloadRows(at: indexPathsToReload, with: .none)
     }
 }
 
