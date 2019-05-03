@@ -62,7 +62,7 @@ final class InlineFilterView: UIView {
         collectionView.alpha = 0
 
         UIView.animate(
-            withDuration: 1,
+            withDuration: 0.9,
             delay: 0,
             usingSpringWithDamping: 1,
             initialSpringVelocity: 0,

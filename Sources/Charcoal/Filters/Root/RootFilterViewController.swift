@@ -216,6 +216,7 @@ final class RootFilterViewController: FilterViewController {
     @objc private func handleResetButtonTap() {
         selectionStore.removeValues(for: filterContainer.allFilters)
         rootDelegate?.rootFilterViewControllerDidResetAllFilters(self)
+
         freeTextFilterViewController?.reset()
         inlineFilterView?.resetContentOffset()
 
