@@ -126,14 +126,6 @@ final class RootFilterViewController: FilterViewController {
         tableView.reloadData()
     }
 
-    func reloadCells(for filter: Filter) {
-        let keys = filterContainer.rootFilters
-        if let index = keys.firstIndex(of: filter) {
-            let indexPath = IndexPath(row: index, section: Section.rootFilters.rawValue)
-            indexPathsToReload = exclusiveFiltersIndexPaths(for: filter) + [indexPath]
-        }
-    }
-
     func showLoadingIndicator(_ show: Bool) {
         resetButton.isEnabled = !show
         verticalSelectorView.isEnabled = !show
@@ -304,9 +296,19 @@ extension RootFilterViewController: UITableViewDelegate {
 
         switch section {
         case .rootFilters:
-            delegate?.filterViewController(self, didSelectFilter: filterContainer.rootFilters[indexPath.row])
+            let filter = filterContainer.rootFilters[indexPath.row]
+            delegate?.filterViewController(self, didSelectFilter: filter)
+            reloadCells(for: filter)
         case .freeText, .inline:
             return
+        }
+    }
+
+    private func reloadCells(for filter: Filter) {
+        let keys = filterContainer.rootFilters
+        if let index = keys.firstIndex(of: filter) {
+            let indexPath = IndexPath(row: index, section: Section.rootFilters.rawValue)
+            indexPathsToReload = exclusiveFiltersIndexPaths(for: filter) + [indexPath]
         }
     }
 }
