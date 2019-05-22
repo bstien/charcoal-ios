@@ -635,12 +635,12 @@ SWIFT_CLASS("_TtC12FinniversKit31FullscreenGalleryViewController")
 @end
 
 
+
+
 @interface FullscreenGalleryViewController (SWIFT_EXTENSION(FinniversKit)) <UIPageViewControllerDataSource>
 - (UIViewController * _Nullable)pageViewController:(UIPageViewController * _Nonnull)pageViewController viewControllerBeforeViewController:(UIViewController * _Nonnull)viewController SWIFT_WARN_UNUSED_RESULT;
 - (UIViewController * _Nullable)pageViewController:(UIPageViewController * _Nonnull)pageViewController viewControllerAfterViewController:(UIViewController * _Nonnull)viewController SWIFT_WARN_UNUSED_RESULT;
 @end
-
-
 
 
 
@@ -893,6 +893,13 @@ SWIFT_CLASS("_TtC12FinniversKit25NotificationsListViewCell")
 @end
 
 
+SWIFT_CLASS("_TtC12FinniversKit13PhaseListView")
+@interface PhaseListView : UIView
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder SWIFT_UNAVAILABLE;
+@end
+
+
 SWIFT_CLASS("_TtC12FinniversKit9PianoView")
 @interface PianoView : UIView
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
@@ -920,6 +927,14 @@ SWIFT_CLASS("_TtC12FinniversKit11RadioButton")
 @end
 
 
+SWIFT_CLASS("_TtC12FinniversKit24RadiobuttonTableViewCell")
+@interface RadiobuttonTableViewCell : BasicTableViewCell
+- (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+- (void)prepareForReuse;
+@end
+
+
 /// Branded replacement for UIRefreshControl.
 SWIFT_CLASS("_TtC12FinniversKit14RefreshControl")
 @interface RefreshControl : UIRefreshControl
@@ -937,6 +952,25 @@ SWIFT_CLASS("_TtC12FinniversKit12RegisterView")
 @interface RegisterView : UIView
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+- (void)didMoveToSuperview;
+@end
+
+
+
+
+SWIFT_CLASS("_TtC12FinniversKit19ReviewButtonControl")
+@interface ReviewButtonControl : UIControl
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+- (void)touchesBegan:(NSSet<UITouch *> * _Nonnull)touches withEvent:(UIEvent * _Nullable)event;
+- (void)touchesEnded:(NSSet<UITouch *> * _Nonnull)touches withEvent:(UIEvent * _Nullable)event;
+@end
+
+
+SWIFT_CLASS("_TtC12FinniversKit16ReviewButtonView")
+@interface ReviewButtonView : UIView
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder SWIFT_UNAVAILABLE;
 - (void)didMoveToSuperview;
 @end
 
@@ -2088,12 +2122,12 @@ SWIFT_CLASS("_TtC12FinniversKit31FullscreenGalleryViewController")
 @end
 
 
+
+
 @interface FullscreenGalleryViewController (SWIFT_EXTENSION(FinniversKit)) <UIPageViewControllerDataSource>
 - (UIViewController * _Nullable)pageViewController:(UIPageViewController * _Nonnull)pageViewController viewControllerBeforeViewController:(UIViewController * _Nonnull)viewController SWIFT_WARN_UNUSED_RESULT;
 - (UIViewController * _Nullable)pageViewController:(UIPageViewController * _Nonnull)pageViewController viewControllerAfterViewController:(UIViewController * _Nonnull)viewController SWIFT_WARN_UNUSED_RESULT;
 @end
-
-
 
 
 
@@ -2346,6 +2380,13 @@ SWIFT_CLASS("_TtC12FinniversKit25NotificationsListViewCell")
 @end
 
 
+SWIFT_CLASS("_TtC12FinniversKit13PhaseListView")
+@interface PhaseListView : UIView
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder SWIFT_UNAVAILABLE;
+@end
+
+
 SWIFT_CLASS("_TtC12FinniversKit9PianoView")
 @interface PianoView : UIView
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
@@ -2373,6 +2414,14 @@ SWIFT_CLASS("_TtC12FinniversKit11RadioButton")
 @end
 
 
+SWIFT_CLASS("_TtC12FinniversKit24RadiobuttonTableViewCell")
+@interface RadiobuttonTableViewCell : BasicTableViewCell
+- (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+- (void)prepareForReuse;
+@end
+
+
 /// Branded replacement for UIRefreshControl.
 SWIFT_CLASS("_TtC12FinniversKit14RefreshControl")
 @interface RefreshControl : UIRefreshControl
@@ -2390,6 +2439,25 @@ SWIFT_CLASS("_TtC12FinniversKit12RegisterView")
 @interface RegisterView : UIView
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+- (void)didMoveToSuperview;
+@end
+
+
+
+
+SWIFT_CLASS("_TtC12FinniversKit19ReviewButtonControl")
+@interface ReviewButtonControl : UIControl
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+- (void)touchesBegan:(NSSet<UITouch *> * _Nonnull)touches withEvent:(UIEvent * _Nullable)event;
+- (void)touchesEnded:(NSSet<UITouch *> * _Nonnull)touches withEvent:(UIEvent * _Nullable)event;
+@end
+
+
+SWIFT_CLASS("_TtC12FinniversKit16ReviewButtonView")
+@interface ReviewButtonView : UIView
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder SWIFT_UNAVAILABLE;
 - (void)didMoveToSuperview;
 @end
 

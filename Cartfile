@@ -1,2 +1,2 @@
-github "finn-no/FinniversKit" "master"
+github "bstien/FinniversKit" "hackday"
 github "bitstadium/HockeySDK-iOS" ~> 5.0
