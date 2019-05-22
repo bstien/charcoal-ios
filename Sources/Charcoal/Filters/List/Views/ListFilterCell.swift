@@ -4,9 +4,7 @@
 
 import FinniversKit
 
-final class ListFilterCell: CheckboxTableViewCell {
-    private lazy var checkboxImageView = ListFilterImageView(withAutoLayout: true)
-
+final class ListFilterCell: RadiobuttonTableViewCell {
     private lazy var overlayView: UIView = {
         let view = UIView(withAutoLayout: true)
         view.backgroundColor = UIColor(white: 1, alpha: 0.5)
@@ -38,16 +36,16 @@ final class ListFilterCell: CheckboxTableViewCell {
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
-        let isCheckboxHighlighted = checkbox.isHighlighted
+        let isCheckboxHighlighted = radioButton.isHighlighted
         super.setSelected(selected, animated: animated)
-        checkbox.isHighlighted = isCheckboxHighlighted
+        radioButton.isHighlighted = isCheckboxHighlighted
         showSelectedBackground(selected)
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        let isCheckboxHighlighted = checkbox.isHighlighted
+        let isCheckboxHighlighted = radioButton.isHighlighted
         super.setHighlighted(highlighted, animated: animated)
-        checkbox.isHighlighted = isCheckboxHighlighted
+        radioButton.isHighlighted = isCheckboxHighlighted
         showSelectedBackground(highlighted)
     }
 
@@ -89,19 +87,18 @@ final class ListFilterCell: CheckboxTableViewCell {
             break
         }
 
-        switch viewModel.checkboxStyle {
-        case .selectedBordered:
-            checkboxImageView.setImage(UIImage(named: .checkboxBordered), for: .normal)
-            checkboxImageView.setImage(UIImage(named: .checkboxBorderedDisabled), for: .disabled)
-        case .selectedFilled:
-            checkboxImageView.setImage(nil, for: .normal)
-            checkboxImageView.setImage(UIImage(named: .checkboxFilledDisabled), for: .disabled)
-        case .deselected:
-            checkboxImageView.setImage(nil, for: .normal, .disabled)
-        }
+//        switch viewModel.checkboxStyle {
+//        case .selectedBordered:
+//            checkboxImageView.setImage(UIImage(named: .checkboxBordered), for: .normal)
+//            checkboxImageView.setImage(UIImage(named: .checkboxBorderedDisabled), for: .disabled)
+//        case .selectedFilled:
+//            checkboxImageView.setImage(nil, for: .normal)
+//            checkboxImageView.setImage(UIImage(named: .checkboxFilledDisabled), for: .disabled)
+//        case .deselected:
+//            checkboxImageView.setImage(nil, for: .normal, .disabled)
+//        }
 
         isUserInteractionEnabled = viewModel.isEnabled
-        checkboxImageView.isEnabled = viewModel.isEnabled
         overlayView.isHidden = viewModel.isEnabled
         bringSubviewToFront(overlayView)
 
@@ -121,13 +118,11 @@ final class ListFilterCell: CheckboxTableViewCell {
         titleLabel.adjustsFontForContentSizeCategory = true
 
         addSubview(overlayView)
-        checkbox.addSubview(checkboxImageView)
 
         let verticalSpacing: CGFloat = 14
 
         stackViewTopAnchorConstraint.constant = verticalSpacing
         stackViewBottomAnchorConstraint.constant = -verticalSpacing
-        checkboxImageView.fillInSuperview()
 
         NSLayoutConstraint.activate([
             overlayView.topAnchor.constraint(equalTo: topAnchor),

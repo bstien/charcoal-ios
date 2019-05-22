@@ -24,6 +24,8 @@ final class ListFilterViewController: FilterViewController {
 
     private let filter: Filter
 
+    private var previousSelection: IndexPath?
+
     private var canSelectAll: Bool {
         return filter.value != nil
     }
@@ -109,6 +111,7 @@ extension ListFilterViewController: UITableViewDataSource {
             default:
                 let hasSelectedSubfilters = selectionStore.hasSelectedSubfilters(for: subfilter)
                 let isSelected = selectionStore.isSelected(subfilter) || hasSelectedSubfilters || isAllSelected
+                if isSelected { previousSelection = indexPath }
                 viewModel = .regular(from: subfilter, isSelected: isSelected, isEnabled: isEnabled)
             }
         }
@@ -146,6 +149,20 @@ extension ListFilterViewController: UITableViewDelegate {
                 animateSelectionForRow(at: indexPath, isSelected: isSelected)
                 showBottomButton(true, animated: true)
                 tableView.scrollToRow(at: indexPath, at: .none, animated: true)
+
+                if let otherIndexPath = previousSelection, let otherFilter = filter.subfilters[safe: otherIndexPath.row], otherFilter != subfilter {
+                    let isSelected = selectionStore.toggleValue(for: otherFilter)
+                    DispatchQueue.main.async { [weak self] in
+                        tableView.deselectRow(at: otherIndexPath, animated: false)
+                        self?.animateSelectionForRow(at: otherIndexPath, isSelected: isSelected)
+                        self?.unhighlightSelectionForRow(at: otherIndexPath, isSelected: false)
+                    }
+                    previousSelection = indexPath
+                } else if previousSelection == indexPath {
+                    previousSelection = nil
+                } else {
+                    previousSelection = indexPath
+                }
             }
 
             delegate?.filterViewController(self, didSelectFilter: subfilter)
@@ -155,6 +172,12 @@ extension ListFilterViewController: UITableViewDelegate {
     private func animateSelectionForRow(at indexPath: IndexPath, isSelected: Bool) {
         if let cell = tableView.cellForRow(at: indexPath) as? ListFilterCell {
             cell.animateSelection(isSelected: isSelected)
+        }
+    }
+
+    private func unhighlightSelectionForRow(at indexPath: IndexPath, isSelected: Bool) {
+        if let cell = tableView.cellForRow(at: indexPath) as? ListFilterCell {
+            cell.setHighlighted(false, animated: false)
         }
     }
 }
