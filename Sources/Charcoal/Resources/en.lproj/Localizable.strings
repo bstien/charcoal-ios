@@ -6,11 +6,11 @@
 */
 
 "all" = "Alle";
-"cancel" = "Avbryt";
-"done" = "Ferdig";
-"reset" = "Nullstill";
-"applyButton" = "Bruk";
-"showResultsButton" = "Vis %i treff";
+"cancel" = "Cancel";
+"done" = "Done";
+"reset" = "Reset";
+"applyButton" = "Apply filter";
+"showResultsButton" = "Show hits";
 "searchPlaceholder" = "Ord i annonsen";
 "browserText" = "Åpnes i nettleseren";
 "over" = "Over";
@@ -23,10 +23,10 @@
 "selected" = "Markert";
 "numberOfResults" = "Treff";
 "vertical" = "Marked";
-"back" = "Tilbake";
-"next" = "Neste";
-"skip" = "Hopp over";
-"noValue" = "Ingen verdi";
+"back" = "Back";
+"next" = "Next";
+"skip" = "Skip";
+"noValue" = "No value";
 
 "root.title" = "Filtrer søket";
 "root.verticalSelector.title" = "Flere kategorier";
