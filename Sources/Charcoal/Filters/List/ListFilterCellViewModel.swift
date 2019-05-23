@@ -62,7 +62,7 @@ extension ListFilterCellViewModel {
         return ListFilterCellViewModel(
             title: filter.title,
             subtitle: nil,
-            detailText: filter.numberOfResults.decimalFormatted,
+            detailText: nil,
             accessoryStyle: filter.subfilters.isEmpty ? .none : .chevron,
             checkboxStyle: checkboxStyle,
             isEnabled: isEnabled
